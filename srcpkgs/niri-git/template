@@ -1,0 +1,29 @@
+# Template file for 'niri-git'
+pkgname=niri-git
+version=20250427
+revision=1
+build_style=cargo
+configure_args="--no-default-features --features dbus,xdp-gnome-screencast"
+hostmakedepends="pkg-config clang18-devel git"
+makedepends="eudev-libudev-devel libxkbcommon-devel libinput-devel libgbm-devel
+ libdisplay-info-devel pipewire-devel pango-devel libseat-devel clang18-devel"
+short_desc="Scrollable-tiling Wayland compositor"
+maintainer="James-Kni <jameskn@proton.me>"
+license="GPL-3.0-or-later"
+homepage="https://github.com/YaLTeR/niri"
+changelog="https://github.com/YaLTeR/niri/releases"
+conflicts="niri"
+
+do_fetch() {
+	git clone https://github.com/YaLTeR/niri.git $wrksrc
+	cd $wrksrc
+}
+
+pre_check() {
+	export XDG_RUNTIME_DIR=$(mktemp -d "$wrksrc/runtime.XXXXXX")
+}
+
+post_install() {
+	vinstall resources/niri.desktop 644 usr/share/wayland-sessions
+	vinstall resources/niri-portals.conf 644 usr/share/xdg-desktop-portal
+}
